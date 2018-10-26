@@ -76,6 +76,14 @@ Parameters:
     Type: Number
     Default: 100
     Description: Maximum number of Firefox nodes
+  ChromeEnabled:
+    Type: String
+    Description: Chrome integration is enabled
+    Default: 1
+  FirefoxEnabled:
+    Type: String
+    Description: Firefox integration is enabled
+    Default: 1
   NodeChromeImage:
     Type: String
     Description: URI to the ecs-node-chrome image.
@@ -99,6 +107,10 @@ Parameters:
     Default: "/dev/xvdcz"
     Description: Name of volume that Docker uses for image and metadata storage.
 
+Conditions:
+  ChromeIntegrationEnabled: !Equals [!Ref ChromeEnabled, 1]
+  FirefoxIntegrationEnabled: !Equals [!Ref FirefoxEnabled, 1]
+
 Resources:
 
   ###################################
@@ -118,6 +130,7 @@ Resources:
 
   ChromeRecord:
     Type: "AWS::Route53::RecordSet"
+    Condition: ChromeIntegrationEnabled
     Properties:
       HostedZoneId: !Ref SeleniumHostedZone
       Comment: Record for Chrome Hub.
@@ -129,6 +142,7 @@ Resources:
 
   FirefoxRecord:
     Type: "AWS::Route53::RecordSet"
+    Condition: FirefoxIntegrationEnabled
     Properties:
       HostedZoneId: !Ref SeleniumHostedZone
       Comment: Record for Firefox Hub.
@@ -442,6 +456,7 @@ Resources:
 
   ChromeHubService:
     Type: "AWS::ECS::Service"
+    Condition: ChromeIntegrationEnabled
     Properties:
       Cluster: !Ref HubCluster
       DeploymentConfiguration:
@@ -453,6 +468,7 @@ Resources:
 
   ChromeHubTask:
     Type: "AWS::ECS::TaskDefinition"
+    Condition: ChromeIntegrationEnabled
     Properties:
       Family: ecs-selenium-hub-chrome
       NetworkMode: bridge
@@ -477,6 +493,7 @@ Resources:
 
   FirefoxHubService:
     Type: "AWS::ECS::Service"
+    Condition: FirefoxIntegrationEnabled
     Properties:
       Cluster: !Ref HubCluster
       DeploymentConfiguration:
@@ -488,6 +505,7 @@ Resources:
 
   FirefoxHubTask:
     Type: "AWS::ECS::TaskDefinition"
+    Condition: FirefoxIntegrationEnabled
     Properties:
       Family: ecs-selenium-hub-firefox
       NetworkMode: bridge
@@ -702,6 +720,7 @@ Resources:
 
   NodeChromeTask:
     Type: "AWS::ECS::TaskDefinition"
+    Condition: ChromeIntegrationEnabled
     Properties:
       TaskRoleArn: !GetAtt NodeTaskRole.Arn
       Family: ecs-node-chrome
@@ -740,6 +759,7 @@ Resources:
 
   NodeChromeService:
     Type: "AWS::ECS::Service"
+    Condition: ChromeIntegrationEnabled
     Properties:
       Cluster: !Ref NodeCluster
       DeploymentConfiguration:
@@ -751,6 +771,7 @@ Resources:
 
   NodeFirefoxTask:
     Type: "AWS::ECS::TaskDefinition"
+    Condition: FirefoxIntegrationEnabled
     Properties:
       TaskRoleArn: !GetAtt NodeTaskRole.Arn
       Family: ecs-node-firefox
@@ -789,6 +810,7 @@ Resources:
 
   NodeFirefoxService:
     Type: "AWS::ECS::Service"
+    Condition: FirefoxIntegrationEnabled
     Properties:
       Cluster: !Ref NodeCluster
       DeploymentConfiguration:
@@ -808,11 +830,13 @@ Outputs:
   FirefoxHubURI:
     Description: URI for the Firefox Hub
     Value: !Sub "http://${FirefoxRecord}:4444"
+    Condition: FirefoxIntegrationEnabled
     Export:
       Name: "FirefoxHubURI"
 
   ChromeHubURI:
     Description: URI for the Chrome Hub
     Value: !Sub "http://${ChromeRecord}:4444"
+    Condition: ChromeIntegrationEnabled
     Export:
       Name: "ChromeHubURI"

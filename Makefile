@@ -12,6 +12,8 @@ STACK_PARAMETERS=--parameters ParameterKey=VpcId,ParameterValue="$(ECS_SELENIUM_
 				  ParameterKey=NodeInstanceType,ParameterValue="$(ECS_SELENIUM_NODE_INSTANCE_TYPE)" \
 				  ParameterKey=AdminCIDR,ParameterValue="$(ECS_SELENIUM_ADMIN_CIDR)" \
 				  ParameterKey=DesiredFleetCapacity,ParameterValue="$(ECS_SELENIUM_DESIRED_FLEET_CAP)" \
+				  ParameterKey=ChromeEnabled,ParameterValue="$(ECS_SELENIUM_CHROME_ENABLED)" \
+				  ParameterKey=FirefoxEnabled,ParameterValue="$(ECS_SELENIUM_FIREFOX_ENABLED)" \
 				  ParameterKey=DesiredChromeNodes,ParameterValue="$(ECS_SELENIUM_DESIRED_CHROME_NODES)" \
 				  ParameterKey=DesiredFirefoxNodes,ParameterValue="$(ECS_SELENIUM_DESIRED_FIREFOX_NODES)" \
 				  ParameterKey=DomainName,ParameterValue="$(ECS_SELENIUM_DOMAIN_NAME)" \

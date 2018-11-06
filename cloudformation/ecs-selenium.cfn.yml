@@ -76,14 +76,6 @@ Parameters:
     Type: Number
     Default: 100
     Description: Maximum number of Firefox nodes
-  ChromeEnabled:
-    Type: String
-    Description: Chrome integration is enabled
-    Default: 1
-  FirefoxEnabled:
-    Type: String
-    Description: Firefox integration is enabled
-    Default: 1
   NodeChromeImage:
     Type: String
     Description: URI to the ecs-node-chrome image.
@@ -108,8 +100,8 @@ Parameters:
     Description: Name of volume that Docker uses for image and metadata storage.
 
 Conditions:
-  ChromeIntegrationEnabled: !Equals [!Ref ChromeEnabled, 1]
-  FirefoxIntegrationEnabled: !Equals [!Ref FirefoxEnabled, 1]
+  ChromeIntegrationEnabled: !Not [ !Equals [!Ref DesiredChromeNodes, 0] ]
+  FirefoxIntegrationEnabled: !Not [ !Equals [!Ref DesiredFirefoxNodes, 0] ]
 
 Resources:
 
